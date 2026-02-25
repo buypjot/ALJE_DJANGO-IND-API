@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>📡 Live Request Monitor</title>
+    <meta http-equiv="refresh" content="60">
+    <style>
+        body {
+            background-color: #0d1117;
+            color: #c9d1d9;
+            font-family: Consolas, monospace;
+            padding: 30px;
+        }
+
+        h2, h3 {
+            color: #58a6ff;
+        }
+
+        .stats-box {
+            background: #161b22;
+            border: 1px solid #30363d;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #161b22;
+            margin-bottom: 20px;
+        }
+
+        th, td {
+            padding: 10px;
+            border: 1px solid #30363d;
+            text-align: left;
+        }
+
+        th {
+            background-color: #21262d;
+            color: #58a6ff;
+        }
+
+        .error {
+            color: #ff7b72;
+        }
+
+        .success {
+            color: #3fb950;
+        }
+
+        button {
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    {% load tz %}
+
+    <h2>📊 Live Request Dashboard</h2>
+
+    <div class="stats-box">
+        <p><strong>🧮 Total Requests:</strong> {{ total_requests }}</p>
+        <p><strong>📡 Unique IPs:</strong> {{ unique_ips }}</p>
+
+        <h4>🔥 Most Accessed Views</h4>
+        <ul>
+            {% for view, count in sorted_views %}
+                <li><strong>{{ view }}</strong>: {{ count }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <!-- Filter Form -->
+    <form method="get" style="margin-bottom: 20px;">
+        <label for="start">📅 Start Time (UTC): </label>
+        <input type="datetime-local" id="start" name="start" value="{{ start|default_if_none:'' }}">
+        <button type="submit">🔍 Filter</button>
+    </form>
+
+    <!-- Delete Filtered Logs Form -->
+    <form method="post" action="{% url 'delete_filtered_logs' %}" style="margin-bottom: 10px;" onsubmit="return confirm('Are you sure you want to delete filtered logs?');">
+        {% csrf_token %}
+        <input type="hidden" name="start" value="{{ start|default_if_none:'' }}">
+        <button type="submit" style="background-color: #8b0000; color: white; padding: 5px 10px; border: none; border-radius: 4px;">🗑️ Delete Filtered Logs</button>
+    </form>
+
+    <!-- Delete All Logs Form -->
+    <form method="post" action="{% url 'delete_all_logs' %}" onsubmit="return confirm('⚠️ Are you sure you want to delete ALL logs?');">
+        {% csrf_token %}
+        <button type="submit" style="background-color: #ff0000; color: white; padding: 5px 10px; border: none; border-radius: 4px;">❌ Delete All Logs</button>
+    </form>
+
+    <table>
+        <tr>
+            <th>Time</th>
+            <th>IP</th>
+            <th>Path</th>
+            <th>Status</th>
+            <th>Method</th>
+            <th>Size (KB)</th>
+            <th>Duration (ms)</th>
+            <th>Error</th>
+        </tr>
+        {% for req in page_obj %}
+        <tr>
+            <td>
+                <div><strong>UTC:</strong> {{ req.timestamp }}</div>
+                <div><strong>Saudi:</strong> {% timezone "Asia/Riyadh" %}{{ req.timestamp }}{% endtimezone %}</div>
+            </td>
+            <td>{{ req.ip }}</td>
+            <td><a href="{% url 'log_detail' req.id %}" style="color: #58a6ff;">{{ req.path }}</a></td>
+            <td class="{% if req.status < 400 %}success{% else %}error{% endif %}">{{ req.status }}</td>
+            <td>{{ req.method }}</td>
+            <td>{{ req.size_kb }}</td>
+            <td>{{ req.duration_ms }}</td>
+            <td class="error">{{ req.error }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <!-- Pagination -->
+    <div style="margin-top: 20px;">
+        {% if page_obj.has_previous %}
+        <a href="?page=1{% if start %}&start={{ start }}{% endif %}">⏮️ First</a>
+        <a href="?page={{ page_obj.previous_page_number }}{% if start %}&start={{ start }}{% endif %}">◀️ Prev</a>
+        {% endif %}
+
+        <span style="margin: 0 10px;">
+            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+        </span>
+
+        {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}{% if start %}&start={{ start }}{% endif %}">Next ▶️</a>
+        <a href="?page={{ page_obj.paginator.num_pages }}{% if start %}&start={{ start }}{% endif %}">Last ⏭️</a>
+        {% endif %}
+    </div>
+</body>
+</html>

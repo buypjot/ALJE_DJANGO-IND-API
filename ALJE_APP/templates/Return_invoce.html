@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Print Document</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 0;
+            /* Force margin to none for printing */
+            counter-increment: page;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 210mm;
+            margin: 0 auto;
+            padding: 20mm;
+            /* Since @page margin is 0, add manual padding */
+            background: white;
+            page-break-inside: avoid;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-direction: row-reverse;
+        }
+
+        .header-text {
+            text-align: left;
+            flex: 1;
+        }
+
+        .image-container {
+            flex: 0 0 auto;
+            margin-left: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .image-container img {
+            max-height: 100px;
+            width: auto;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .header p {
+            margin: 0;
+            font-size: 14px;
+        }
+
+        .section {
+            margin-bottom: 20px;
+        }
+
+        .section:last-child {
+            margin-bottom: 100px;
+        }
+
+        .section h2 {
+            font-size: 16px;
+            margin: 10px 0;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 5px;
+        }
+
+        .details-table,
+        .items-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .details-table td,
+        .items-table th,
+        .items-table td {
+            border: 1px solid #ccc;
+            padding: 10px 8px;
+            text-align: left;
+            font-size: 14px;
+        }
+
+        .items-table th {
+            background-color: #f2f2f2;
+        }
+
+        .items-table {
+            margin-bottom: 60px;
+            page-break-inside: auto;
+        }
+
+        .items-table tr {
+            page-break-inside: avoid;
+            page-break-after: auto;
+        }
+
+        .footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 30px;
+            background: white;
+            border-top: 1px solid #ccc;
+        }
+
+        #dateTime {
+            position: absolute;
+            right: 20px;
+            bottom: 8px;
+            font-size: 12px;
+            color: #333;
+            font-weight: 500;
+            padding: 5px 10px;
+        }
+
+        .footerposition {
+            margin-top: auto;
+            padding: 20px;
+            text-align: center;
+            padding-bottom: 60px;
+        }
+
+        .footer-row {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 40px;
+            font-size: 14px;
+        }
+
+        .footerpara {
+            text-align: start;
+        }
+
+        .divider {
+            border-top: 1px solid #ccc;
+            margin: 20px 0;
+        }
+
+        @media print {
+            body {
+                margin: 0;
+                padding: 0;
+            }
+
+            .container {
+                box-shadow: none;
+                border: none;
+                page-break-inside: avoid;
+                padding: 20mm;
+                margin: 0 auto;
+            }
+
+            .footer {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                height: 30px;
+                background: white;
+            }
+
+            .items-table {
+                margin-bottom: 40px;
+            }
+        }
+    </style>
+
+</head>
+
+<body onload="printAndClose()">
+    <div class="container">
+        <div class="header">
+            <div class="image-container">
+                <img src="{% static 'images/logo.jpg' %}" alt="Company Logo">
+            </div>
+            <div class="header-text">
+                <h1>Return Invoice Receipt</h1>
+                <!-- <p>Abdul Latif Jameel Electronics</p>
+                <p>123 Restaurant St, City Name | Phone: +91 12345 67890</p> -->
+                <!-- <p>Website: www.aljeflutterapp.com</p> -->
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Details</h2>
+            <table class="details-table">
+                <tr>
+                    <td><strong>WHR SuperUser No:</strong> {{ superuserno }}</td>
+                    <td><strong>WHR SuperUser Name:</strong> {{ superusername }}</td>
+                </tr>
+                <tr>
+                    <td><strong>Region:</strong> {{ region }}</td>
+                    <td><strong>Date:</strong> {{ date }}</td>
+                </tr>
+                <tr>
+                    <td><strong>Salesm No:</strong> {{ salesmano }}</td>
+                    <td><strong>Salesman Name:</strong> {{ salesmanoname }}</td>
+                </tr>
+
+                <tr>
+                    <td><strong>Customer No:</strong> {{ customerNo }}</td>
+                    <td><strong>Customer Name:</strong> {{ customername }}</td>
+                </tr>
+                <tr>
+                    <td><strong>Customer Site:</strong> {{ customersite }}</td>
+                    <td><strong>Invoice No:</strong> {{ invoiceno }}</td>
+                </tr>
+                <tr>
+                    <td><strong>Inv Return Id::</strong> {{ uniqulastreqno }}</td>
+                    <td><strong>Remarks:</strong> {{ remarks }}</td>
+                </tr>
+            </table>
+        </div>
+        <div class="section">
+            <h2>Items</h2>
+            <table class="items-table">
+                <thead>
+                    <tr>
+                        <th>S.No</th>
+                        <th>I.Code</th>
+                        <th>I.Details</th>
+                        <th>Qty</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in items %}
+                    <tr>
+                        <td>{{ item.s_no }}</td>
+                        <td>{{ item.item_code }}</td>
+                        <td>{{ item.item_details }}</td>
+                        <td>{{ item.qty }}</td>
+                    </tr>
+                    {% endfor %}
+                    <tr>
+                        <td colspan="3" style="text-align: right;"><strong>Total Qty:</strong></td>
+                        <td>{{ itemtotalqty }}</td>
+
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="footerposition">
+        <div class="divider"></div>
+        <p class="footerpara"><strong>"Dispatched goods are accepted in good condition without any physical damage of
+                item or carton."</strong></p>
+        <div class="footer-row">
+            <span><strong>Authorized Signature:</strong> ________________</span>
+            <span><strong>Customer Signature:</strong> __________________</span>
+        </div>
+        <div class="divider"></div>
+    </div>
+    </div>
+
+
+
+    <div class="footer">
+        <span id="dateTime"></span>
+    </div>
+
+    <script>
+        function printAndClose() {
+            // Update the date time with formatted date and time
+            const currentDate = new Date();
+
+            // Format date
+            const day = currentDate.getDate().toString().padStart(2, '0');
+            const month = currentDate.toLocaleString('en-US', { month: 'short' }).toUpperCase();
+            const year = currentDate.getFullYear();
+
+            // Format time
+            const hours = currentDate.getHours().toString().padStart(2, '0');
+            const minutes = currentDate.getMinutes().toString().padStart(2, '0');
+            const seconds = currentDate.getSeconds().toString().padStart(2, '0');
+
+            // Combine date and time
+            const formattedDateTime = `${day}-${month}-${year} ${hours}:${minutes}:${seconds}`;
+            document.getElementById('dateTime').textContent = formattedDateTime;
+
+            window.print();
+            setTimeout(function () {
+                window.close();
+            }, 1000);
+        }
+    </script>
+
+
+</body>
+
+</html>

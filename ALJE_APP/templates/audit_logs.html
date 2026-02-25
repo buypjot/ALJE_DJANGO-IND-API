@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Audit Log Results</title>
+
+    <!-- ? DataTables CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+    <style>
+        body {
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 14px;
+            background-color: #f8f9fa;
+            margin: 20px;
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        table {
+            font-size: 12px;
+            width: 100%;
+        }
+
+        /* Make Time column spaced */
+        td:first-child,
+        th:first-child {
+            padding-left: 12px;
+            padding-right: 20px;
+            min-width: 130px;
+        }
+
+        thead input {
+            width: 100%;
+            font-size: 12px;
+            padding: 3px;
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+
+<body>
+    <h2>Audit Log Results</h2>
+
+    <table id="auditTable" class="display">
+        <thead>
+            <tr>
+                {% for col in columns %}
+                <th>{{ col }}</th>
+                {% endfor %}
+            </tr>
+            <tr>
+                {% for col in columns %}
+                <th><input type="text" placeholder="Search {{ col }}" /></th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in rows %}
+            <tr>
+                {% for cell in row %}
+                <td>{{ cell }}</td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- ? jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+
+    <!-- ? DataTables JS -->
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
+    <!-- ? DataTables init with column filtering -->
+    <script>
+        $(document).ready(function () {
+            // Setup - add input for each footer cell
+            var table = $('#auditTable').DataTable({
+                orderCellsTop: true,
+                fixedHeader: true
+            });
+
+            // Apply column search
+            $('#auditTable thead tr:eq(1) th').each(function (i) {
+                $('input', this).on('keyup change', function () {
+                    if (table.column(i).search() !== this.value) {
+                        table.column(i).search(this.value).draw();
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>

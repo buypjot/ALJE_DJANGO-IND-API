@@ -1,0 +1,85 @@
+App-Specific Table Data Mapping (Models vs. Views)</h3>
+
+<div style='border:none;border-left:solid #2F5496 3.0pt;padding:0in 0in 0in 8.0pt;
+margin-top:7.5pt;margin-bottom:7.5pt'>
+
+<p style='margin:0in;background:#F4F4F4'><span style='font-size:11.0pt;
+color:black;mso-color-alt:windowtext'>The architecture splits database
+interactions between strict Object-Relational Models (dynamic raw SQL queries
+injected within the Python Views (</span><code><span style='font-size:10.0pt;
+color:black;mso-color-alt:windowtext'>views.py</span></code><span
+style='font-size:11.0pt;color:black;mso-color-alt:windowtext'>).</span><span
+style='font-size:11.0pt'><o:p></o:p></span></p>
+
+</div>
+
+<ul type=disc>
+ <li class=MsoNormal style='mso-margin-top-alt:auto;margin-bottom:4.0pt;
+     mso-list:l4 level1 lfo2;tab-stops:list .5in'><span class=SpellE><code><b><span
+     style='font-size:10.0pt;color:black;mso-color-alt:windowtext'>New_Outbound_App</span></b></code></span><strong><span
+     style='font-family:"Arial",sans-serif;mso-fareast-font-family:"Times New Roman"'>
+     (Enhanced Outbound):</span></strong><span style='font-family:"Times New Roman",serif;
+     mso-fareast-font-family:"Times New Roman"'> <o:p></o:p></span></li>
+</ul>
+
+<ul type=disc>
+ <ul type=circle>
+  <li class=MsoNormal style='mso-margin-top-alt:auto;margin-bottom:4.0pt;
+      mso-list:l4 level2 lfo2;tab-stops:list 1.0in'><strong><span
+      style='font-family:"Arial",sans-serif;mso-fareast-font-family:"Times New Roman"'>Tables
+      Queried Directly:</span></strong><span style='font-family:"Times New Roman",serif;
+      mso-fareast-font-family:"Times New Roman"'> </span>50 <span
+      style='font-family:"Times New Roman",serif;mso-fareast-font-family:"Times New Roman"'>Tables
+      (via Raw SQL)<o:p></o:p></span></li>
+ </ul>
+</ul>
+
+<ul type=disc>
+ <li class=MsoNormal style='mso-margin-top-alt:auto;margin-bottom:4.0pt;
+     mso-list:l4 level1 lfo2;tab-stops:list .5in'><span class=SpellE><code><b><span
+     style='font-size:10.0pt;color:black;mso-color-alt:windowtext'>Inbound_App</span></b></code></span><strong><span
+     style='font-family:"Arial",sans-serif;mso-fareast-font-family:"Times New Roman"'>
+     (Receiving &amp; Storage):</span></strong><span style='font-family:"Times New Roman",serif;
+     mso-fareast-font-family:"Times New Roman"'> <o:p></o:p></span></li>
+</ul>
+
+<ul type=disc>
+ <ul type=circle>
+  <li class=MsoNormal style='mso-margin-top-alt:auto;margin-bottom:4.0pt;
+      mso-list:l4 level2 lfo2;tab-stops:list 1.0in'><strong><span
+      style='font-family:"Arial",sans-serif;mso-fareast-font-family:"Times New Roman"'>Tables
+      Queried Directly:</span></strong><span style='font-family:"Times New Roman",serif;
+      mso-fareast-font-family:"Times New Roman"'> 16 Tables (via Raw SQL)<o:p></o:p></span></li>
+ </ul>
+</ul>
+
+<ul type=disc>
+ <li class=MsoNormal style='mso-margin-top-alt:auto;margin-bottom:4.0pt;
+     mso-list:l4 level1 lfo2;tab-stops:list .5in'><span class=SpellE><code><b><span
+     style='font-size:10.0pt;color:black;mso-color-alt:windowtext'>Location_Map_App</span></b></code></span><strong><span
+     style='font-family:"Arial",sans-serif;mso-fareast-font-family:"Times New Roman"'>
+     (Warehouse Tracking):</span></strong><span style='font-family:"Times New Roman",serif;
+     mso-fareast-font-family:"Times New Roman"'> <o:p></o:p></span></li>
+</ul>
+
+<ul type=disc>
+ <ul type=circle>
+  <li class=MsoNormal style='mso-margin-top-alt:auto;margin-bottom:4.0pt;
+      mso-list:l4 level2 lfo2;tab-stops:list 1.0in'><strong><span
+      style='font-family:"Arial",sans-serif;mso-fareast-font-family:"Times New Roman"'>Tables
+      Queried Directly:</span></strong><span style='font-family:"Times New Roman",serif;
+      mso-fareast-font-family:"Times New Roman"'> 12 Tables (via Raw SQL)<o:p></o:p></span></li>
+ </ul>
+</ul>
+
+<h2>3. Database Structure &amp; Configurations</h2>
+
+<p>The project is connected to an array of SQL servers handling massive loads
+separately (as verified in the project's configurations). Django distributes
+the ORM queries via a designated default router over three specific endpoints.</p>
+
+<ul type=disc>
+ <li class=MsoNormal style='mso-margin-top-alt:auto;margin-bottom:4.0pt;
+     mso-list:l6 level1 lfo3;tab-stops:list .5in'><strong><span
+     style='font-family:"Arial",sans-serif;mso-fareast-font-family:"Times New Roman"'>Database
+     1 (Default):</span></st

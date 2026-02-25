@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Print Document</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 210mm;
+            /* A4 width */
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            background: white;
+            page-break-inside: avoid;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-direction: row-reverse;
+        }
+
+        .header-text {
+            text-align: left;
+            flex: 1;
+        }
+
+        .image-container {
+            flex: 0 0 auto;
+            margin-left: 20px;
+        }
+
+        .image-container img {
+            max-height: 100px;
+            width: auto;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .header p {
+            margin: 0;
+            font-size: 14px;
+        }
+
+        .section {
+            margin-bottom: 20px;
+        }
+
+        .section:last-child {
+            margin-bottom: 100px;
+        }
+
+        .section h2 {
+            font-size: 16px;
+            margin: 10px 0;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 5px;
+        }
+
+        .details-table,
+        .items-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .details-table td,
+        .items-table th,
+        .items-table td {
+            border: 1px solid #ccc;
+            padding: 10px 8px;
+            text-align: left;
+            font-size: 14px;
+        }
+
+        .items-table th {
+            background-color: #f2f2f2;
+        }
+
+        .footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 30px;
+            background: white;
+            border-top: 1px solid #ccc;
+        }
+
+        #dateTime {
+            position: absolute;
+            right: 20px;
+            bottom: 8px;
+            font-size: 12px;
+            color: #333;
+            font-weight: 500;
+            padding: 5px 10px;
+        }
+
+        .image-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .footerposition {
+            margin-top: auto;
+            padding: 20px;
+            text-align: center;
+            padding-bottom: 60px;
+        }
+
+        .footer-row {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 40px;
+            font-size: 14px;
+        }
+
+        .footerpara {
+            text-align: start;
+        }
+
+        .divider {
+            border-top: 1px solid #ccc;
+            margin: 20px 0;
+        }
+
+        @page {
+            size: A4;
+            margin: 0mm;
+        }
+
+        @media print {
+
+            html,
+            body {
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+
+            .container {
+                box-shadow: none;
+                border: none;
+                page-break-inside: avoid;
+                margin-bottom: 40px;
+            }
+
+            .footer {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                height: 30px;
+                background: white;
+            }
+
+            .items-table {
+                margin-bottom: 40px;
+            }
+        }
+
+        .items-table {
+            margin-bottom: 60px;
+            page-break-inside: auto;
+        }
+
+        .items-table tr {
+            page-break-inside: avoid;
+            page-break-after: auto;
+        }
+    </style>
+</head>
+
+<body onload="printAndClose()">
+    <div class="container">
+        <div class="header">
+            <div class="image-container">
+                <img src="{% static 'images/logo.jpg' %}" alt="Company Logo">
+            </div>
+            <div class="header-text">
+                <h1>Delivery Receipt</h1>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Details</h2>
+            <table class="details-table">
+                <tr>
+                    <td><strong>Delivery No:</strong> {{ deliveryno }}</td>
+                    <td><strong>Date:</strong> {{ date }}</td>
+                </tr>
+                 <tr>
+                    <td> <strong>Pick id:</strong> {{ pickid }} -
+                    {% if pickmanname == "null" or not pickmanname %}
+                        Quick Dispatch
+                    {% else %}
+                        {{ pickmanname }}
+                    {% endif %}</td>
+                    <td><strong>Customer No:</strong> {{ customerNo }}</td>
+                </tr>
+                <tr>
+                    <td><strong>Region:</strong> {{ region }}</td>
+                    <td><strong>Customer Name:</strong> {{ customername }}</td>
+                </tr>
+                <tr>
+                    <td><strong>Transporter Name:</strong> {{ transportor_Name }}</td>
+                    <td><strong>Customer Site:</strong> {{ customersite }}</td>
+                </tr>
+                <tr>
+                    <td><strong>Vehicle No:</strong> {{ vehicleNo }}</td>
+                    <td><strong>Driver Name:</strong> {{ driverName }}</td>
+                </tr>
+                <tr>
+                    <td><strong>Driver Mobile No:</strong> {{ driverMobileNo }}</td>
+                    <td><strong>Delivery Address:</strong> {{ deliveryaddress }}</td>
+                </tr>
+                <tr>
+                    <td><strong>W.Remarks:</strong> {{ remmarks }}</td>
+                    <td><strong>S.Remarks:</strong> {{ salesmanremmarks }}</td>
+                </tr>
+                
+            </table>
+        </div>
+
+        <div class="section">
+            <h2>Items</h2>
+            <table class="items-table">
+                <thead>
+                    <tr>
+                        <th>S.No</th>
+                        <th>Inv.No</th>
+                        <th>I.Code</th>
+                        <th>I.Details</th>
+                        <th>Qty</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in items %}
+                    <tr>
+                        <td>{{ item.s_no }}</td>
+                        <td>{{ item.inv_No }}</td>
+                        <td>{{ item.item_code }}</td>
+                        <td>{{ item.item_details }}</td>
+                        <td>{{ item.sendqty }}</td>
+                    </tr>
+                    {% endfor %}
+                    <tr>
+                        <td colspan="4" style="text-align: right;"><strong>Total Qty:</strong></td>
+                        <td>{{ itemtotalqty }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="footerposition">
+        <div class="divider"></div>
+        <p class="footerpara"><strong>"Dispatched goods are accepted in good condition without any physical damage of
+                item or carton."</strong></p>
+        <div class="footer-row">
+            <span><strong>Authorized Signature:</strong> ________________</span>
+            <span><strong>Customer Signature:</strong> __________________</span>
+        </div>
+        <div class="divider"></div>
+    </div>
+
+    <div class="footer">
+        <span id="dateTime"></span>
+    </div>
+
+    <script>
+        function printAndClose() {
+            const currentDate = new Date();
+            const day = currentDate.getDate().toString().padStart(2, '0');
+            const month = currentDate.toLocaleString('en-US', { month: 'short' }).toUpperCase();
+            const year = currentDate.getFullYear();
+            const hours = currentDate.getHours().toString().padStart(2, '0');
+            const minutes = currentDate.getMinutes().toString().padStart(2, '0');
+            const seconds = currentDate.getSeconds().toString().padStart(2, '0');
+
+            const formattedDateTime = `${day}-${month}-${year} ${hours}:${minutes}:${seconds}`;
+            document.getElementById('dateTime').textContent = formattedDateTime;
+
+            window.print();
+            setTimeout(function () {
+                window.close();
+            }, 1000);
+        }
+    </script>
+</body>
+
+</html>

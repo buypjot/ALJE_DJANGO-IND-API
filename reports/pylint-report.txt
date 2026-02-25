@@ -1,0 +1,8 @@
+************* Module D:\ALJE
+D:\ALJE:1:0: F0001: No module named D:\ALJE (fatal)
+************* Module project\git
+project\git:1:0: F0001: No module named project\git (fatal)
+************* Module clone
+clone:1:0: F0001: No module named clone (fatal)
+************* Module django\ALJE_DJANGO-IND-API
+django\ALJE_DJANGO-IND-API:1:0: F0001: No module named django\ALJE_DJANGO-IND-API (fatal)
