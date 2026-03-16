@@ -1,7 +1,7 @@
 
 
 from django.views.decorators.http import require_GET,require_POST
-from django.utils import timezone  # Django’s timezone aware datetime
+from django.utils import timezone
 
 
 
